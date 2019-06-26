@@ -1,2 +1,2 @@
 # rdbms
-Working with RDBMS and Redis
+Working with a RDBMS and Redis
