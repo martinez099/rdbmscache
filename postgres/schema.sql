@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS books, authors, testing, images;
+DROP TABLE IF EXISTS books, authors, images;
 
 CREATE TABLE IF NOT EXISTS authors (
     id serial PRIMARY KEY,
@@ -7,11 +7,15 @@ CREATE TABLE IF NOT EXISTS authors (
 
 CREATE TABLE IF NOT EXISTS books (
     id serial PRIMARY KEY,
-    author_id INT references authors(id), title VARCHAR(100)
+    author_id INT references authors(id),
+    title VARCHAR(100)
 );
 
-CREATE TABLE IF NOT EXISTS testing(id INT);
-CREATE TABLE IF NOT EXISTS images(id serial, data bytea);
+CREATE TABLE IF NOT EXISTS images (
+    id serial PRIMARY KEY,
+    book_id INT references books(id),
+    data bytea
+);
 
 INSERT INTO authors(id, name) VALUES(1, 'Jack London');
 INSERT INTO authors(id, name) VALUES(2, 'Honore de Balzac');
@@ -28,3 +32,9 @@ INSERT INTO books(id, author_id, title) VALUES(6, 4, 'Nana');
 INSERT INTO books(id, author_id, title) VALUES(7, 4, 'The Belly of Paris');
 INSERT INTO books(id, author_id, title) VALUES(8, 5, 'In Cold blood');
 INSERT INTO books(id, author_id, title) VALUES(9, 5, 'Breakfast at Tiffany');
+
+INSERT INTO images(id, author_id, data) VALUES(1, 1, 'asdfadfadfasdfasdfasdfadsffds');
+INSERT INTO images(id, author_id, data) VALUES(2, 2, 'asdfadfadfasdfasdfasdfadsffds');
+INSERT INTO images(id, author_id, data) VALUES(3, 3, 'asdfadfadfasdfasdfasdfadsffds');
+INSERT INTO images(id, author_id, data) VALUES(4, 4, 'asdfadfadfasdfasdfasdfadsffds');
+INSERT INTO images(id, author_id, data) VALUES(5, 5, 'asdfadfadfasdfasdfasdfadsffds');

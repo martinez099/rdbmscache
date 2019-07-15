@@ -1,9 +1,9 @@
 version: '3'
 services:
   psql:
-    build: psql
+    build: postgres
     volumes:
-      - ./psql:/app
+      - ./postgres:/app
       - logvolume01:/var/log
     ports:
       - "5432:5432"
