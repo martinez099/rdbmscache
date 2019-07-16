@@ -1,4 +1,9 @@
-package com.redislabs.demo;
+package com.redislabs.demo.rdbms.application;
+
+import com.redislabs.demo.rdbms.Test;
+import com.redislabs.demo.rdbms.infrastructure.Cache;
+import com.redislabs.demo.rdbms.infrastructure.Repository;
+import com.redislabs.demo.rdbms.pojo.Author;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,20 +11,19 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-public class Client {
+public class API {
 
     private Cache cache;
     private Repository repo;
 
-    public Client() {
+    public API() {
         this.cache = new Cache("redis://localhost");
         this.repo = new Repository("jdbc:postgresql://127.0.0.1:5432/postgres",
                 "postgres",
                 "postgres");
     }
 
-    private Author getAuthor(int id) {
+    public Author getAuthor(int id) {
 
         Map<String, String> cached = cache.get("author:" + id);
 
@@ -45,28 +49,25 @@ public class Client {
         return new Author(id, cached.get("name"));
     }
 
-    private void setAuthor(Author author) {
+    public void setAuthor(Author author) {
+        this.repo.setAuthor(author);
         Map<String, String> vals = new HashMap<>();
         vals.put("name", author.getName());
-        cache.set("author:" + author.getId(), vals);
+        this.cache.set("author:" + author.getId(), vals);
     }
 
-    private void close() {
+    public void delAuthor(int id) {
+        this.repo.delAuthor(id);
+        this.cache.del("author:" + id);
+    }
+
+    public void close() {
         try {
             cache.close();
             repo.close();
         } catch (IOException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
-    }
-
-    public static void main(String[] args) {
-        Client client = new Client();
-
-        Author a = client.getAuthor(1);
-        System.out.println(a);
-
-        client.close();
     }
 }

@@ -1,12 +1,13 @@
-package com.redislabs.demo;
+package com.redislabs.demo.rdbms.infrastructure;
+
+import com.redislabs.demo.rdbms.Test;
+import com.redislabs.demo.rdbms.pojo.Author;
+import com.redislabs.demo.rdbms.pojo.Book;
+import com.redislabs.demo.rdbms.pojo.Picture;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +27,6 @@ public class Repository implements Closeable {
             return;
         }
 
-        System.out.println("PostgreSQL JDBC Driver Registered!");
         try {
             sqlConnection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
@@ -45,19 +45,54 @@ public class Repository implements Closeable {
                 result.add(a);
             }
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         return result.toArray(new Author[0]);
     }
 
-    public void setAuthor(Author author) {
-        /*
+    public boolean setAuthor(Author author) {
+
+        String stmt = "INSERT INTO authors (id, name) VALUES (?, ?)";
+        PreparedStatement pStmt = null;
         try {
-            this.command("INSERT INTO author VALUES (%1, %2)".)
+            pStmt = sqlConnection.prepareStatement(stmt);
+            pStmt.setInt(1, author.getId());
+            pStmt.setString(2, author.getName());
+            try {
+                pStmt.executeUpdate();
+
+                return true;
+            } catch (org.postgresql.util.PSQLException ex) {
+                stmt = "UPDATE authors SET name = ? WHERE id = ?";
+                pStmt = sqlConnection.prepareStatement(stmt);
+                pStmt.setString(1, author.getName());
+                pStmt.setInt(2, author.getId());
+
+                return pStmt.executeUpdate() == 1;
+            }
+        } catch (SQLException ex) {
+            Logger lgr = Logger.getLogger(Test.class.getName());
+            lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+            return false;
         }
-        */
+    }
+
+    public boolean delAuthor(int id) {
+        String stmt = "DELETE FROM authors WHERE id = ?";
+        try {
+            PreparedStatement pStmt = sqlConnection.prepareStatement(stmt);
+            pStmt.setInt(1, id);
+
+            return pStmt.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            Logger lgr = Logger.getLogger(Test.class.getName());
+            lgr.log(Level.SEVERE, ex.getMessage(), ex);
+
+            return false;
+        }
     }
 
     public Book[] getBooks() {
@@ -70,28 +105,28 @@ public class Repository implements Closeable {
                 result.add(b);
             }
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         return result.toArray(new Book[0]);
     }
 
-    public Image[] getImgaes() {
-        List<Image> result = new ArrayList<>();
+    public Picture[] getImgaes() {
+        List<Picture> result = new ArrayList<>();
         ResultSet rs = this.query("SELECT * FROM images");
 
         try {
             while (rs.next()) {
-                Image i = new Image(rs.getInt(1), rs.getInt(2), rs.getBytes(3));
+                Picture i = new Picture(rs.getInt(1), rs.getInt(2), rs.getBytes(3));
                 result.add(i);
             }
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
-        return result.toArray(new Image[0]);
+        return result.toArray(new Picture[0]);
     }
 
     @Override
@@ -111,7 +146,7 @@ public class Repository implements Closeable {
             return st.executeQuery(stmt);
 
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
             return null;
@@ -125,7 +160,7 @@ public class Repository implements Closeable {
             return st.execute(stmt);
 
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Client.class.getName());
+            Logger lgr = Logger.getLogger(Test.class.getName());
             lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
             return false;

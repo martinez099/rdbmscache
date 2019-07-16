@@ -1,4 +1,4 @@
-package com.redislabs.demo;
+package com.redislabs.demo.rdbms.pojo;
 
 public class Author {
 
@@ -17,5 +17,9 @@ public class Author {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

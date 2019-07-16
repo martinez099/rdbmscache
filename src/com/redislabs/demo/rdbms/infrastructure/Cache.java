@@ -1,4 +1,4 @@
-package com.redislabs.demo;
+package com.redislabs.demo.rdbms.infrastructure;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -27,6 +27,10 @@ public class Cache implements Closeable {
 
     public Map<String, String> get(String key) {
         return sync.hgetall(key);
+    }
+
+    public Long del(String key) {
+        return sync.del(key);
     }
 
     @Override

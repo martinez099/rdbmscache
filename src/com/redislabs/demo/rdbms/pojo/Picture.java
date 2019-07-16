@@ -1,6 +1,6 @@
-package com.redislabs.demo;
+package com.redislabs.demo.rdbms.pojo;
 
-public class Image {
+public class Picture {
 
     private int id;
 
@@ -8,7 +8,7 @@ public class Image {
 
     private byte[] data;
 
-    public Image(int id, int authorId, byte[] data) {
+    public Picture(int id, int authorId, byte[] data) {
         this.id = id;
         this.authorId = authorId;
         this.data = data;
@@ -22,7 +22,15 @@ public class Image {
         return this.authorId;
     }
 
+    public void setAuthorId(int id) {
+        this.authorId = id;
+    }
+
     public byte[] getData() {
         return this.data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }
