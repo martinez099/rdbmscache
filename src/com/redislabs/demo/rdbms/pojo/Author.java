@@ -1,18 +1,12 @@
 package com.redislabs.demo.rdbms.pojo;
 
-public class Author {
-
-    private int id;
+public class Author extends Base {
 
     private String name;
 
     public Author(int id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     public String getName() {

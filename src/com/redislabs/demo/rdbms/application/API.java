@@ -3,11 +3,9 @@ package com.redislabs.demo.rdbms.application;
 import com.redislabs.demo.rdbms.Test;
 import com.redislabs.demo.rdbms.infrastructure.Cache;
 import com.redislabs.demo.rdbms.infrastructure.Repository;
-import com.redislabs.demo.rdbms.pojo.Author;
+import com.redislabs.demo.rdbms.pojo.Base;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,42 +21,29 @@ public class API {
                 "postgres");
     }
 
-    public Author getAuthor(int id) {
-
-        Map<String, String> cached = cache.get("author:" + id);
-
-        if (cached.isEmpty()) {
-            Author[] stored = repo.getAuthors();
+    public <T extends Base> T get(Class<T> cls, int id) {
+        T cached = cache.get(cls, id);
+        if (cached == null) {
+            T[] stored = repo.get(cls);
             if (stored.length == 0) {
                 return null;
             }
-
-            for (Author a : stored) {
-                Map<String, String> vals = new HashMap<>();
-                vals.put("name", a.getName());
-                cache.set("author:" + a.getId(), vals);
+            for (T s : stored) {
+                cache.set(s);
             }
-
-            cached = cache.get("author:" + id);
+            cached = cache.get(cls, id);
         }
-
-        if (cached.isEmpty()) {
-            return null;
-        }
-
-        return new Author(id, cached.get("name"));
+        return cached;
     }
 
-    public void setAuthor(Author author) {
-        this.repo.setAuthor(author);
-        Map<String, String> vals = new HashMap<>();
-        vals.put("name", author.getName());
-        this.cache.set("author:" + author.getId(), vals);
+    public <T extends Base> void set(T o) {
+        this.repo.set(o);
+        this.cache.set(o);
     }
 
-    public void delAuthor(int id) {
-        this.repo.delAuthor(id);
-        this.cache.del("author:" + id);
+    public <T extends Base> void del(Class<T> cls, int id) {
+        this.repo.del(cls, id);
+        this.cache.del(cls, id);
     }
 
     public void close() {

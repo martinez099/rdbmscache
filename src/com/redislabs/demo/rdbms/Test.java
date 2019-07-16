@@ -10,29 +10,29 @@ public class Test {
 
         API api = new API();
 
-        Author a = api.getAuthor(1);
+        Author a = api.get(Author.class, 1);
 
         assert a.getId() == 1;
 
         a.setName("anotherName");
 
-        api.setAuthor(a);
+        api.set(a);
 
-        a = api.getAuthor(1);
+        a = api.get(Author.class, 1);
 
         assert a.getName().equals("anotherName");
 
         a = new Author(6, "newAuthor");
 
-        api.setAuthor(a);
+        api.set(a);
 
-        a = api.getAuthor(6);
+        a = api.get(Author.class, 6);
 
         assert a.getName().equals("newAuthor");
 
-        api.delAuthor(6);
+        api.del(Author.class, 6);
 
-        a = api.getAuthor(6);
+        a = api.get(Author.class, 6);
 
         assert a == null;
 

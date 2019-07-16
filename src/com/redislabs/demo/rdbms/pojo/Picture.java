@@ -1,21 +1,15 @@
 package com.redislabs.demo.rdbms.pojo;
 
-public class Picture {
-
-    private int id;
+public class Picture extends Base {
 
     private int authorId;
 
     private byte[] data;
 
     public Picture(int id, int authorId, byte[] data) {
-        this.id = id;
+        super(id);
         this.authorId = authorId;
         this.data = data;
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     public int getAuthorId() {
