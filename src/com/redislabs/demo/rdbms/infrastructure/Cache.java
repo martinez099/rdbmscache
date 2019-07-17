@@ -13,12 +13,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Cache implements Closeable {
 
+    private Logger logger = Logger.getLogger(Cache.class.getName());
+
     private RedisClient redisClient;
+
     private StatefulRedisConnection<String, String> redisConnection;
+
     private RedisCommands<String, String> sync;
 
     public Cache(String url) {
@@ -27,7 +33,7 @@ public class Cache implements Closeable {
         sync = redisConnection.sync();
     }
 
-    public <T extends Base> String set(T o) {
+    public <T extends Base> boolean set(T o) {
         Class cls = o.getClass();
         Field[] fieldlist = cls.getDeclaredFields();
         Method[] methodList = cls.getDeclaredMethods();
@@ -37,17 +43,17 @@ public class Cache implements Closeable {
             try {
                 Object value = methodList[i].invoke(o);
                 vals.put(fname, String.valueOf(value));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (IllegalAccessException|InvocationTargetException ex) {
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+
+                return false;
             }
         }
-        return _set(cls.getName() + ':' + o.getId(), vals);
+        return this.sync.hmset(cls.getName() + ':' + o.getId(), vals).equals("OK");
     }
 
     public <T extends Base> T get(Class<T> cls, int id) {
-        Map<String, String> vals = this._get(cls.getName() + ':' + id);
+        Map<String, String> vals = sync.hgetall(cls.getName() + ':' + id);
 
         if (vals.isEmpty()) {
             return null;
@@ -63,38 +69,20 @@ public class Cache implements Closeable {
                 Constructor<T> cnst = cls.getConstructor(Integer.class, String.class, String.class);
                 return cnst.newInstance(id, vals.values().toArray(new String[0])[0], vals.values().toArray(new String[0])[0]);
             }
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
+        } catch (NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
         return null;
     }
 
     public <T extends Base> boolean del(Class<T> cls, int id) {
-        return _del(cls.getName() + ':' + id) > 0;
+        return this.sync.del(cls.getName() + ':' + id) > 0;
     }
 
     @Override
     public void close() throws IOException {
         redisConnection.close();
         redisClient.shutdown();
-    }
-
-    private String _set(String key, Map<String, String> value) {
-        return sync.hmset(key, value);
-    }
-
-    private Map<String, String> _get(String key) {
-        return sync.hgetall(key);
-    }
-
-    private Long _del(String key) {
-        return sync.del(key);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.redislabs.demo.rdbms.infrastructure;
 
-import com.redislabs.demo.rdbms.Test;
 import com.redislabs.demo.rdbms.pojo.Base;
 
 import java.io.Closeable;
@@ -17,23 +16,23 @@ import java.util.logging.Logger;
 
 public class Repository implements Closeable {
 
-    private Connection sqlConnection;
+    private Logger logger = Logger.getLogger(Repository.class.getName());
+
+    private Connection con;
 
     public Repository(String url, String username, String password) {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Where is your PostgreSQL JDBC Driver? "
-                    + "Include in your library path!");
-            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+
             return;
         }
 
         try {
-            sqlConnection = DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
+            con = DriverManager.getConnection(url, username, password);
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -55,16 +54,14 @@ public class Repository implements Closeable {
                     result.add(t);
                 }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
+        } catch (SQLException|
+                NoSuchMethodException|
+                InstantiationException|
+                IllegalAccessException|
+                InvocationTargetException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+
+            return null;
         }
 
         return result.toArray((T[]) Array.newInstance(cls, 0));
@@ -81,10 +78,10 @@ public class Repository implements Closeable {
             try {
                 Object value = methodList[i].invoke(o);
                 vals.put(fname, String.valueOf(value));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (IllegalAccessException|InvocationTargetException ex) {
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+
+                return false;
             }
         }
 
@@ -117,22 +114,21 @@ public class Repository implements Closeable {
     @Override
     public void close() throws IOException {
         try {
-            sqlConnection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new IOException(e);
+            con.close();
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+
+            throw new IOException(ex);
         }
     }
 
     private ResultSet query(String stmt) {
         try {
-            Statement st = sqlConnection.createStatement();
+            Statement st = con.createStatement();
 
             return st.executeQuery(stmt);
-
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Test.class.getName());
-            lgr.log(Level.SEVERE, ex.getMessage(), ex);
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
 
             return null;
         }
@@ -140,13 +136,11 @@ public class Repository implements Closeable {
 
     private boolean command(String stmt) {
         try {
-            Statement st = sqlConnection.createStatement();
+            Statement st = con.createStatement();
 
             return st.execute(stmt);
-
         } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Test.class.getName());
-            lgr.log(Level.SEVERE, ex.getMessage(), ex);
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
 
             return false;
         }

@@ -1,6 +1,5 @@
 package com.redislabs.demo.rdbms.application;
 
-import com.redislabs.demo.rdbms.Test;
 import com.redislabs.demo.rdbms.infrastructure.Cache;
 import com.redislabs.demo.rdbms.infrastructure.Repository;
 import com.redislabs.demo.rdbms.pojo.Base;
@@ -11,7 +10,10 @@ import java.util.logging.Logger;
 
 public class API {
 
+    private Logger logger = Logger.getLogger(Cache.class.getName());
+
     private Cache cache;
+
     private Repository repo;
 
     public API() {
@@ -36,14 +38,12 @@ public class API {
         return cached;
     }
 
-    public <T extends Base> void set(T o) {
-        this.repo.set(o);
-        this.cache.set(o);
+    public <T extends Base> boolean set(T o) {
+        return this.repo.set(o) && this.cache.set(o);
     }
 
-    public <T extends Base> void del(Class<T> cls, int id) {
-        this.repo.del(cls, id);
-        this.cache.del(cls, id);
+    public <T extends Base> boolean del(Class<T> cls, int id) {
+        return this.repo.del(cls, id) && this.cache.del(cls, id);
     }
 
     public void close() {
@@ -51,8 +51,7 @@ public class API {
             cache.close();
             repo.close();
         } catch (IOException ex) {
-            Logger lgr = Logger.getLogger(Test.class.getName());
-            lgr.log(Level.SEVERE, ex.getMessage(), ex);
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 }
