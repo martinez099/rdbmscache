@@ -49,7 +49,7 @@ public class Repository implements Closeable {
                     result.add(t);
                 }
                 if (cnsts[0].getParameterTypes().length == 3) {
-                    Constructor<T> cnst = cls.getConstructor(Integer.class, String.class, String.class);
+                    Constructor<T> cnst = cls.getConstructor(int.class, String.class, String.class);
                     T t = cnst.newInstance(rs.getInt(1), rs.getString(2), rs.getString(3));
                     result.add(t);
                 }
@@ -68,11 +68,12 @@ public class Repository implements Closeable {
     }
 
     public <T extends Base> boolean set(T o) {
+
+        // reflect members
         Class cls = o.getClass();
         Field[] fieldlist = cls.getDeclaredFields();
         Method[] methodList = cls.getDeclaredMethods();
         Map<String, String> vals = new HashMap<>();
-
         for (int i = 0; i < fieldlist.length; i++) {
             String fname = fieldlist[i].getName();
             try {
@@ -85,6 +86,7 @@ public class Repository implements Closeable {
             }
         }
 
+        // construct UPSERT query
         StringBuilder stmt = new StringBuilder("INSERT INTO " + getTableName(cls) + " (id, ");
         for (String key : vals.keySet()) {
             stmt.append(key).append(", ");

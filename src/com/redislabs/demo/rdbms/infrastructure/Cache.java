@@ -67,7 +67,7 @@ public class Cache implements Closeable {
             }
             if (cnsts[0].getParameterTypes().length == 3) {
                 Constructor<T> cnst = cls.getConstructor(Integer.class, String.class, String.class);
-                return cnst.newInstance(id, vals.values().toArray(new String[0])[0], vals.values().toArray(new String[0])[0]);
+                return cnst.newInstance(id, vals.values().toArray(new String[0])[0], vals.values().toArray(new String[0])[1]);
             }
         } catch (NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);

@@ -34,7 +34,7 @@ INSERT INTO books(id, author_id, title) VALUES(8, 5, 'In Cold blood');
 INSERT INTO books(id, author_id, title) VALUES(9, 5, 'Breakfast at Tiffany');
 
 INSERT INTO pictures(id, author_id, data) VALUES(1, 1, 'asdfadfadfasdfasdfasdfadsffds');
-INSERT INTO pictures(id, author_id, data) VALUES(2, 2, 'asdfadfadfasdfasdfasdfadsffds');
-INSERT INTO pictures(id, author_id, data) VALUES(3, 3, 'asdfadfadfasdfasdfasdfadsffds');
-INSERT INTO pictures(id, author_id, data) VALUES(4, 4, 'asdfadfadfasdfasdfasdfadsffds');
-INSERT INTO pictures(id, author_id, data) VALUES(5, 5, 'asdfadfadfasdfasdfasdfadsffds');
+INSERT INTO pictures(id, author_id, data) VALUES(2, 2, 'sdfadfadfasdfasdfasdfadsffdsa');
+INSERT INTO pictures(id, author_id, data) VALUES(3, 3, 'dfadfadfasdfasdfasdfadsffdsas');
+INSERT INTO pictures(id, author_id, data) VALUES(4, 4, 'fadfadfasdfasdfasdfadsffdsasd');
+INSERT INTO pictures(id, author_id, data) VALUES(5, 5, 'asdfadfadfasdfasdfasdfadsffdd');

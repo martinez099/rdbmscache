@@ -10,14 +10,14 @@ import java.util.logging.Logger;
 
 public class API {
 
-    private Logger logger = Logger.getLogger(Cache.class.getName());
+    private Logger logger = Logger.getLogger(API.class.getName());
 
     private Cache cache;
 
     private Repository repo;
 
     public API() {
-        this.cache = new Cache("redis://localhost");
+        this.cache = new Cache("redis://localhost:6379");
         this.repo = new Repository("jdbc:postgresql://127.0.0.1:5432/postgres",
                 "postgres",
                 "postgres");
