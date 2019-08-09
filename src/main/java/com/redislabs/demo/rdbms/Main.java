@@ -2,9 +2,9 @@ package com.redislabs.demo.rdbms;
 
 import com.redislabs.demo.rdbms.application.API;
 import com.redislabs.demo.rdbms.application.JsonTransformer;
-import com.redislabs.demo.rdbms.pojo.Author;
-import com.redislabs.demo.rdbms.pojo.Book;
-import com.redislabs.demo.rdbms.pojo.Picture;
+import com.redislabs.demo.rdbms.infrastructure.pojo.Author;
+import com.redislabs.demo.rdbms.infrastructure.pojo.Book;
+import com.redislabs.demo.rdbms.infrastructure.pojo.Picture;
 
 import static spark.Spark.*;
 
