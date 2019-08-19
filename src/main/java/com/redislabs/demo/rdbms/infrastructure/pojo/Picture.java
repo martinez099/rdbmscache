@@ -1,5 +1,6 @@
 package com.redislabs.demo.rdbms.infrastructure.pojo;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -8,15 +9,17 @@ public class Picture extends Base {
 
     public static final String AUTHOR_FIELD_NAME = "author_id";
 
+    public static final String DATA_FIELD_NAME = "data";
+
     @DatabaseField(columnName = AUTHOR_FIELD_NAME, canBeNull = false)
     private Integer authorId;
 
+    @DatabaseField(columnName = DATA_FIELD_NAME, dataType=DataType.BYTE_ARRAY, canBeNull = false)
     private byte[] data;
 
     public Picture() {}
 
-    public Picture(Integer id, Integer authorId, byte[] data) {
-        super(id);
+    public Picture(Integer authorId, byte[] data) {
         this.authorId = authorId;
         this.data = data;
     }

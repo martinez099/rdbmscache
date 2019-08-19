@@ -10,7 +10,6 @@ import com.redislabs.demo.rdbms.infrastructure.pojo.Picture;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.rmi.activation.UnknownObjectException;
 import java.sql.*;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,6 +34,10 @@ public class Repository implements Closeable {
         }
     }
 
+    public int executeRaw(String stmt) throws SQLException {
+        return authorDao.executeRaw(stmt);
+    }
+
     public void setup(String url) throws SQLException {
         con = new JdbcConnectionSource(url);
 
@@ -46,13 +49,13 @@ public class Repository implements Closeable {
 
     public <T extends Base> T[] select(Class<T> cls) throws SQLException {
         switch (cls.getName()) {
-            case "Author":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Author":
                 List<Author> authors = authorDao.queryForAll();
                 return (T[]) authors.toArray(new Author[0]);
-            case "Book":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Book":
                 List<Book> books = bookDao.queryForAll();
                 return (T[]) books.toArray(new Book[0]);
-            case "Picture":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Picture":
                 List<Picture> pics = pictureDao.queryForAll();
                 return (T[]) pics.toArray(new Picture[0]);
             default:
@@ -62,11 +65,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> T select(Class<T> cls, int id) throws SQLException {
         switch (cls.getName()) {
-            case "Author":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Author":
                 return (T) authorDao.queryForId(id);
-            case "Book":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Book":
                 return (T) bookDao.queryForId(id);
-            case "Picture":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Picture":
                 return (T) pictureDao.queryForId(id);
             default:
                 throw new RuntimeException("unknown class " + cls.getName());
@@ -75,11 +78,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> int update(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "Author":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Author":
                 return authorDao.update((Author) o);
-            case "Book":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Book":
                 return bookDao.update((Book) o);
-            case "Picture":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Picture":
                 return pictureDao.update((Picture) o);
             default:
                 throw new RuntimeException("unknown class " + o.getClass().getName());
@@ -88,13 +91,13 @@ public class Repository implements Closeable {
 
     public <T extends Base> int insert(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "Author":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Author":
                 authorDao.create((Author) o);
                 return o.getId();
-            case "Book":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Book":
                 bookDao.create((Book) o);
                 return o.getId();
-            case "Picture":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Picture":
                 pictureDao.create((Picture) o);
                 return o.getId();
             default:
@@ -104,11 +107,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> int delete(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "Author":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Author":
                 return authorDao.delete((Author) o);
-            case "Book":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Book":
                 return bookDao.delete((Book) o);
-            case "Picture":
+            case "com.redislabs.demo.rdbms.infrastructure.pojo.Picture":
                 return pictureDao.delete((Picture) o);
             default:
                 throw new RuntimeException("unknown class " + o.getClass().getName());

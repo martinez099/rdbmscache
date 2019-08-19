@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        API api = new API();
+        API api = new API("redis://localhost:6379", "jdbc:postgresql://127.0.0.1:5432/postgres?user=postgres&password=postgres");
 
         get("/author/:id", "application/json", (req, res) -> {
             String id = req.params(":id");

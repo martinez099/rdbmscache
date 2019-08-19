@@ -18,8 +18,7 @@ public class Book extends Base {
 
     public Book() {}
 
-    public Book(Integer id, Integer authorId, String title) {
-        super(id);
+    public Book(Integer authorId, String title) {
         this.authorId = authorId;
         this.title = title;
     }

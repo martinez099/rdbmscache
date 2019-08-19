@@ -6,20 +6,19 @@ import com.redislabs.demo.rdbms.infrastructure.pojo.Base;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class API {
 
     private Logger logger = Logger.getLogger(API.class.getName());
 
-    private Cache cache;
+    public Cache cache;
 
-    private Repository repo;
+    public Repository repo;
 
-    public API() {
-        this.cache = new Cache("redis://localhost:6379");
-        this.repo = new Repository("jdbc:postgresql://127.0.0.1:5432/postgres?user=postgres&password=postgres");
+    public API(String redisUrl, String postgresUrl) {
+        this.cache = new Cache(redisUrl);
+        this.repo = new Repository(postgresUrl);
     }
 
     public <T extends Base> T get(Class<T> cls, int id) {
@@ -45,9 +44,14 @@ public class API {
 
     public <T extends Base> boolean set(T o) {
         try {
-            if (this.repo.insert(o) == 0) {
-                this.repo.update(o);
-            };
+            if (this.repo.update(o) != 1) {
+                try {
+                    this.repo.insert(o);
+                } catch (SQLException ne) {
+                    logger.severe(ne.toString());
+                    return false;
+                }
+            }
         } catch (SQLException e) {
             logger.severe(e.toString());
             return false;
@@ -58,18 +62,24 @@ public class API {
     public <T extends Base> boolean del(Class<T> cls, int id) {
         try {
             T o = this.repo.select(cls, id);
-            this.repo.delete(o);
+            if (this.repo.delete(o) != 1) {
+                return false;
+            }
         } catch (SQLException e) {
             logger.severe(e.toString());
+            return false;
         }
         return this.cache.del(cls, id);
     }
 
     public <T extends Base> boolean del(T o) {
         try {
-            this.repo.delete(o);
+            if (this.repo.delete(o) != 1) {
+                return false;
+            }
         } catch (SQLException e) {
             logger.severe(e.toString());
+            return false;
         }
         return this.cache.del(o.getClass(), o.getId());
     }
@@ -78,8 +88,8 @@ public class API {
         try {
             cache.close();
             repo.close();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        } catch (IOException e) {
+            logger.severe(e.toString());
         }
     }
 }

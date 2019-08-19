@@ -13,8 +13,7 @@ public class Author extends Base {
 
     public Author() {}
 
-    public Author(Integer id, String name) {
-        super(id);
+    public Author(String name) {
         this.name = name;
     }
 
