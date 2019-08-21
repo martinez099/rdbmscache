@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 public class Cache implements Closeable {
 
-    private Logger logger = Logger.getLogger(Cache.class.getName());
+    private static Logger logger = Logger.getLogger(Cache.class.getName());
 
     private RedisClient redisClient;
 

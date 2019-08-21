@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class Repository implements Closeable {
 
-    private Logger logger = Logger.getLogger(Repository.class.getName());
+    private static Logger logger = Logger.getLogger(Repository.class.getName());
 
     private JdbcConnectionSource connectionSource;
 

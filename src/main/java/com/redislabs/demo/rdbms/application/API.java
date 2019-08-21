@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class API {
 
-    private Logger logger = Logger.getLogger(API.class.getName());
+    private static Logger logger = Logger.getLogger(API.class.getName());
 
     private Cache cache;
 
@@ -20,6 +20,27 @@ public class API {
     public API(String redisUrl, String postgresUrl) {
         this.cache = new Cache(redisUrl);
         this.repo = new Repository(postgresUrl);
+    }
+
+    /**
+     * Get all domain objects.
+     *
+     * @param cls The class of the objects.
+     * @param <T> The type of the objects.
+     * @return The objects.
+     */
+    public <T extends Base> T[] get(Class<T> cls) {
+        T[] stored;
+        try {
+            stored = repo.select(cls);
+        } catch (SQLException e) {
+            logger.severe(e.toString());
+            return null;
+        }
+        for (T s : stored) {
+            cache.set(s);
+        }
+        return stored;
     }
 
     /**
@@ -33,7 +54,7 @@ public class API {
     public <T extends Base> T get(Class<T> cls, int id) {
         T cached = cache.get(cls, id);
         if (cached == null) {
-            T[] stored = null;
+            T[] stored;
             try {
                 stored = repo.select(cls);
             } catch (SQLException e) {
