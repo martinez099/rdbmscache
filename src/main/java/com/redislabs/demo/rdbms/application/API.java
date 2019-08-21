@@ -2,11 +2,12 @@ package com.redislabs.demo.rdbms.application;
 
 import com.redislabs.demo.rdbms.infrastructure.Cache;
 import com.redislabs.demo.rdbms.infrastructure.Repository;
-import com.redislabs.demo.rdbms.infrastructure.pojo.Base;
+import com.redislabs.demo.rdbms.infrastructure.domain.Base;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
+
 
 public class API {
 
@@ -21,6 +22,14 @@ public class API {
         this.repo = new Repository(postgresUrl);
     }
 
+    /**
+     * Get a domain object.
+     *
+     * @param cls The class of the object.
+     * @param id The ID of the object.
+     * @param <T> The type of the object.
+     * @return The object.
+     */
     public <T extends Base> T get(Class<T> cls, int id) {
         T cached = cache.get(cls, id);
         if (cached == null) {
@@ -42,6 +51,13 @@ public class API {
         return cached;
     }
 
+    /**
+     * Set a domain object.
+     *
+     * @param o The object.
+     * @param <T> The type of the object.
+     * @return Success.
+     */
     public <T extends Base> boolean set(T o) {
         try {
             if (this.repo.update(o) != 1) {
@@ -59,19 +75,31 @@ public class API {
         return this.cache.set(o);
     }
 
+    /**
+     * Delete a domain object.
+     *
+     * @param cls The class of the object.
+     * @param id The ID of the object.
+     * @param <T> The type of the object.
+     * @return Success.
+     */
     public <T extends Base> boolean del(Class<T> cls, int id) {
         try {
             T o = this.repo.select(cls, id);
-            if (this.repo.delete(o) != 1) {
-                return false;
-            }
+            return this.del(o);
         } catch (SQLException e) {
             logger.severe(e.toString());
             return false;
         }
-        return this.cache.del(cls, id);
     }
 
+    /**
+     * Delete a domain object.
+     *
+     * @param o The object.
+     * @param <T> The type of the object.
+     * @return Success.
+     */
     public <T extends Base> boolean del(T o) {
         try {
             if (this.repo.delete(o) != 1) {
@@ -84,6 +112,9 @@ public class API {
         return this.cache.del(o.getClass(), o.getId());
     }
 
+    /**
+     * Close the API and reset the datastores.
+     */
     public void close() {
         cache.flush();
         repo.reset();

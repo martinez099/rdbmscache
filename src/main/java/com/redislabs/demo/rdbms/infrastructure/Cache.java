@@ -1,6 +1,6 @@
 package com.redislabs.demo.rdbms.infrastructure;
 
-import com.redislabs.demo.rdbms.infrastructure.pojo.Base;
+import com.redislabs.demo.rdbms.infrastructure.domain.Base;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;

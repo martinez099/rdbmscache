@@ -1,8 +1,8 @@
 package com.redislabs.demo.rdbms.application;
 
-import com.redislabs.demo.rdbms.infrastructure.pojo.Author;
-import com.redislabs.demo.rdbms.infrastructure.pojo.Book;
-import com.redislabs.demo.rdbms.infrastructure.pojo.Picture;
+import com.redislabs.demo.rdbms.infrastructure.domain.Author;
+import com.redislabs.demo.rdbms.infrastructure.domain.Book;
+import com.redislabs.demo.rdbms.infrastructure.domain.Picture;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 public class TestAPI {
 
-    static API api = new API("redis://localhost:6379", "jdbc:postgresql://127.0.0.1:5432/postgres?user=postgres&password=postgres");
+    static API api = new API("redis://localhost:6379",
+            "jdbc:postgresql://127.0.0.1:5432/postgres?user=postgres&password=postgres");
 
     @BeforeAll
     static void insertTestData() {
