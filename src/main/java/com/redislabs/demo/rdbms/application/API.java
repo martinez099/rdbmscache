@@ -12,9 +12,9 @@ public class API {
 
     private Logger logger = Logger.getLogger(API.class.getName());
 
-    public Cache cache;
+    private Cache cache;
 
-    public Repository repo;
+    private Repository repo;
 
     public API(String redisUrl, String postgresUrl) {
         this.cache = new Cache(redisUrl);
@@ -85,6 +85,8 @@ public class API {
     }
 
     public void close() {
+        cache.flush();
+        repo.reset();
         try {
             cache.close();
             repo.close();

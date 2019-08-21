@@ -7,8 +7,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
-
 
 public class TestAPI {
 
@@ -110,20 +108,6 @@ public class TestAPI {
 
     @AfterAll
     static void tearDown() {
-
-        try {
-            api.repo.executeRaw("DELETE FROM books;");
-            api.repo.executeRaw("ALTER SEQUENCE books_id_seq RESTART WITH 1;");
-            api.repo.executeRaw("DELETE FROM pictures;");
-            api.repo.executeRaw("ALTER SEQUENCE pictures_id_seq RESTART WITH 1;");
-            api.repo.executeRaw("DELETE FROM authors;");
-            api.repo.executeRaw("ALTER SEQUENCE authors_id_seq RESTART WITH 1;");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        api.cache.flush();
-
         api.close();
     }
 }

@@ -3,6 +3,7 @@ package com.redislabs.demo.rdbms.infrastructure;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import com.redislabs.demo.rdbms.infrastructure.pojo.Author;
 import com.redislabs.demo.rdbms.infrastructure.pojo.Base;
 import com.redislabs.demo.rdbms.infrastructure.pojo.Book;
@@ -18,7 +19,7 @@ public class Repository implements Closeable {
 
     private Logger logger = Logger.getLogger(Repository.class.getName());
 
-    private JdbcConnectionSource con;
+    private JdbcConnectionSource connectionSource;
 
     private Dao<Author, Integer> authorDao;
 
@@ -34,16 +35,18 @@ public class Repository implements Closeable {
         }
     }
 
-    public int executeRaw(String stmt) throws SQLException {
-        return authorDao.executeRaw(stmt);
-    }
-
     public void setup(String url) throws SQLException {
-        con = new JdbcConnectionSource(url);
+        connectionSource = new JdbcConnectionSource(url);
 
-        authorDao = DaoManager.createDao(con, Author.class);
-        bookDao = DaoManager.createDao(con, Book.class);
-        pictureDao = DaoManager.createDao(con, Picture.class);
+        // create DAOs
+        authorDao = DaoManager.createDao(connectionSource, Author.class);
+        bookDao = DaoManager.createDao(connectionSource, Book.class);
+        pictureDao = DaoManager.createDao(connectionSource, Picture.class);
+
+        // create DB tables
+        TableUtils.createTable(connectionSource, Author.class);
+        TableUtils.createTable(connectionSource, Book.class);
+        TableUtils.createTable(connectionSource, Picture.class);
     }
 
 
@@ -118,9 +121,21 @@ public class Repository implements Closeable {
         }
     }
 
+    public boolean reset() {
+        try {
+            TableUtils.dropTable(bookDao, true);
+            TableUtils.dropTable(pictureDao, true);
+            TableUtils.dropTable(authorDao, true);
+            return true;
+        } catch (SQLException e) {
+            logger.severe(e.toString());
+            return false;
+        }
+    }
+
     @Override
     public void close() throws IOException {
-        this.con.close();
+        this.connectionSource.close();
     }
 
 }
