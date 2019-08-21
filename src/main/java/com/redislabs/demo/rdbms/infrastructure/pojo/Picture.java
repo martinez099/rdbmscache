@@ -11,25 +11,25 @@ public class Picture extends Base {
 
     public static final String DATA_FIELD_NAME = "data";
 
-    @DatabaseField(columnName = AUTHOR_FIELD_NAME, canBeNull = false)
-    private Integer authorId;
+    @DatabaseField(foreign = true, columnName = AUTHOR_FIELD_NAME, canBeNull = false)
+    private Author author;
 
     @DatabaseField(columnName = DATA_FIELD_NAME, dataType=DataType.BYTE_ARRAY, canBeNull = false)
     private byte[] data;
 
-    public Picture() {}
+    Picture() {}
 
-    public Picture(Integer authorId, byte[] data) {
-        this.authorId = authorId;
+    public Picture(Author author, byte[] data) {
+        this.author = author;
         this.data = data;
     }
 
-    public Integer getAuthorId() {
-        return this.authorId;
+    public Author getAuthor() {
+        return this.author;
     }
 
-    public void setAuthorId(Integer id) {
-        this.authorId = id;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public byte[] getData() {
@@ -42,7 +42,7 @@ public class Picture extends Base {
 
     @Override
     public int hashCode() {
-        return this.authorId.hashCode();
+        return this.author.getId().hashCode();
     }
 
     @Override
@@ -50,6 +50,6 @@ public class Picture extends Base {
         if (other == null || other.getClass() != getClass()) {
             return false;
         }
-        return this.authorId.equals(((Picture) other).authorId);
+        return this.author.getId().equals(((Picture) other).author.getId());
     }
 }

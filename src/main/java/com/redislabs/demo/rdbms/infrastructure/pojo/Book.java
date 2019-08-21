@@ -10,25 +10,25 @@ public class Book extends Base {
 
     public static final String TITLE_FIELD_NAME = "title";
 
-    @DatabaseField(columnName = AUTHOR_FIELD_NAME, canBeNull = false)
-    private Integer authorId;
+    @DatabaseField(foreign = true, columnName = AUTHOR_FIELD_NAME, canBeNull = false)
+    private Author author;
 
     @DatabaseField(columnName = TITLE_FIELD_NAME, canBeNull = false)
     private String title;
 
-    public Book() {}
+    Book() {}
 
-    public Book(Integer authorId, String title) {
-        this.authorId = authorId;
+    public Book(Author author, String title) {
+        this.author = author;
         this.title = title;
     }
 
-    public Integer getAuthorId() {
-        return this.authorId;
+    public Author getAuthor() {
+        return this.author;
     }
 
-    public void setAuthorId(Integer id) {
-        this.authorId = id;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -41,7 +41,7 @@ public class Book extends Base {
 
     @Override
     public int hashCode() {
-        return this.authorId.hashCode() + this.title.hashCode();
+        return this.author.getId().hashCode() + this.title.hashCode();
     }
 
     @Override
@@ -50,6 +50,6 @@ public class Book extends Base {
             return false;
         }
         Book otherBook = (Book) other;
-        return this.title.equals(otherBook.title) && this.authorId.equals(otherBook.authorId);
+        return this.title.equals(otherBook.title) && this.author.getId().equals(otherBook.author.getId());
     }
 }

@@ -11,7 +11,7 @@ public class Author extends Base {
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false)
     private String name;
 
-    public Author() {}
+    Author() {}
 
     public Author(String name) {
         this.name = name;
