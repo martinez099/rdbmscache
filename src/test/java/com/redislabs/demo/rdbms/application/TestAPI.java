@@ -7,6 +7,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 
 public class TestAPI {
 
@@ -108,8 +110,10 @@ public class TestAPI {
         assert p.getAuthor().equals(a4);
 
         Author a1 = api.get(Author.class, 1);
-        p = new Picture(a1, "ASdfadfasdfasdf".getBytes());
+        byte[] newData = "ASdfadfasdfasdf".getBytes();
+        p = new Picture(a1, newData);
         assert api.set(p);
+        assert Arrays.equals(p.getData(), newData);
 
         p = api.get(Picture.class, p.getId());
         assert p.getAuthor().equals(a1);
@@ -121,6 +125,7 @@ public class TestAPI {
 
     @AfterAll
     static void tearDown() {
+        api.reset();
         api.close();
     }
 }

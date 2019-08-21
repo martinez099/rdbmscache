@@ -134,16 +134,24 @@ public class API {
     }
 
     /**
-     * Close the API and reset the datastores.
+     * Reset the cache and the repository.
      */
-    public void close() {
+    public void reset() {
         cache.flush();
         repo.reset();
+    }
+
+    /**
+     * Close the API and reset the datastores.
+     */
+    public boolean close() {
         try {
             cache.close();
             repo.close();
+            return true;
         } catch (IOException e) {
             logger.severe(e.toString());
+            return false;
         }
     }
 }

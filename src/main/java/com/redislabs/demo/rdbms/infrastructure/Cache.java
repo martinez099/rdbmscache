@@ -5,11 +5,10 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Logger;
 
-import com.google.gson.Gson;
+import io.lettuce.core.codec.ByteArrayCodec;
 
 public class Cache implements Closeable {
 
@@ -17,15 +16,13 @@ public class Cache implements Closeable {
 
     private RedisClient redisClient;
 
-    private StatefulRedisConnection<String, String> redisConnection;
+    private StatefulRedisConnection<byte[], byte[]> redisConnection;
 
-    private RedisCommands<String, String> sync;
-
-    private Gson gson = new Gson();
+    private RedisCommands<byte[], byte[]> sync;
 
     public Cache(String url) {
         redisClient = RedisClient.create(url);
-        redisConnection = redisClient.connect();
+        redisConnection = redisClient.connect(new ByteArrayCodec());
         sync = redisConnection.sync();
     }
 
@@ -34,17 +31,39 @@ public class Cache implements Closeable {
     }
 
     public <T extends Base> boolean set(T o) {
-        String value = gson.toJson(o);
-        return this.sync.set(o.getClass().getName() + ':' + o.getId(), value).equals("OK");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(o);
+            oos.flush();
+            oos.close();
+        } catch (IOException e) {
+            logger.severe(e.toString());
+            return false;
+        }
+        String key = o.getClass().getName() + ':' + o.getId();
+        return this.sync.set(key.getBytes(), baos.toByteArray()).equals("OK");
     }
 
     public <T extends Base> T get(Class<T> cls, Integer id) {
-        String value = this.sync.get(cls.getName() + ':' + id);
-        return value != null ? gson.fromJson(value, cls) : null;
+        String key = cls.getName() + ':' + id;
+        byte[] value = sync.get(key.getBytes());
+        if (value == null) {
+            return null;
+        }
+        ByteArrayInputStream bais = new ByteArrayInputStream(value);
+        try {
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (T) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            logger.severe(e.toString());
+            return null;
+        }
     }
 
     public <T extends Base> boolean del(Class<T> cls, int id) {
-        return this.sync.del(cls.getName() + ':' + id) > 0;
+        String key = cls.getName() + ':' + id;
+        return this.sync.del(key.getBytes()) > 0;
     }
 
     @Override
