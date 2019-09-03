@@ -1,5 +1,5 @@
-# rdbms
-This shows Redis as a cache for a Postgres database.
+# rdbmscache
+This shows Redis as a cache for a RDBMS.
 
 It uses lettuce to drive Redis and ormlite to map objects to SQL tables.
 
