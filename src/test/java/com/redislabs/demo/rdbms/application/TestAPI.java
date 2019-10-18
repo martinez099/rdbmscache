@@ -1,8 +1,8 @@
 package com.redislabs.demo.rdbms.application;
 
-import com.redislabs.demo.rdbms.infrastructure.domain.Author;
-import com.redislabs.demo.rdbms.infrastructure.domain.Book;
-import com.redislabs.demo.rdbms.infrastructure.domain.Picture;
+import com.redislabs.demo.rdbms.domain.Author;
+import com.redislabs.demo.rdbms.domain.Book;
+import com.redislabs.demo.rdbms.domain.Picture;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

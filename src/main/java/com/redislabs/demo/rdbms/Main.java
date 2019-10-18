@@ -2,9 +2,9 @@ package com.redislabs.demo.rdbms;
 
 import com.redislabs.demo.rdbms.application.API;
 import com.redislabs.demo.rdbms.application.JsonTransformer;
-import com.redislabs.demo.rdbms.infrastructure.domain.Author;
-import com.redislabs.demo.rdbms.infrastructure.domain.Book;
-import com.redislabs.demo.rdbms.infrastructure.domain.Picture;
+import com.redislabs.demo.rdbms.domain.Author;
+import com.redislabs.demo.rdbms.domain.Book;
+import com.redislabs.demo.rdbms.domain.Picture;
 
 import com.google.gson.Gson;
 

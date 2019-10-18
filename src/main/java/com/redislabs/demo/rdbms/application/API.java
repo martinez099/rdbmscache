@@ -2,7 +2,7 @@ package com.redislabs.demo.rdbms.application;
 
 import com.redislabs.demo.rdbms.infrastructure.Cache;
 import com.redislabs.demo.rdbms.infrastructure.Repository;
-import com.redislabs.demo.rdbms.infrastructure.domain.Base;
+import com.redislabs.demo.rdbms.domain.Base;
 
 import java.io.IOException;
 import java.sql.SQLException;

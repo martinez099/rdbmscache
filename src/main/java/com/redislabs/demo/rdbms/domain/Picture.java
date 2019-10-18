@@ -1,4 +1,4 @@
-package com.redislabs.demo.rdbms.infrastructure.domain;
+package com.redislabs.demo.rdbms.domain;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

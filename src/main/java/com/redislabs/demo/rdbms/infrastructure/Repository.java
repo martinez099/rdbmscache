@@ -4,10 +4,10 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.redislabs.demo.rdbms.infrastructure.domain.Author;
-import com.redislabs.demo.rdbms.infrastructure.domain.Base;
-import com.redislabs.demo.rdbms.infrastructure.domain.Book;
-import com.redislabs.demo.rdbms.infrastructure.domain.Picture;
+import com.redislabs.demo.rdbms.domain.Author;
+import com.redislabs.demo.rdbms.domain.Base;
+import com.redislabs.demo.rdbms.domain.Book;
+import com.redislabs.demo.rdbms.domain.Picture;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -52,13 +52,13 @@ public class Repository implements Closeable {
 
     public <T extends Base> T[] select(Class<T> cls) throws SQLException {
         switch (cls.getName()) {
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Author":
+            case "com.redislabs.demo.rdbms.domain.Author":
                 List<Author> authors = authorDao.queryForAll();
                 return (T[]) authors.toArray(new Author[0]);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Book":
+            case "com.redislabs.demo.rdbms.domain.Book":
                 List<Book> books = bookDao.queryForAll();
                 return (T[]) books.toArray(new Book[0]);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Picture":
+            case "com.redislabs.demo.rdbms.domain.Picture":
                 List<Picture> pics = pictureDao.queryForAll();
                 return (T[]) pics.toArray(new Picture[0]);
             default:
@@ -68,11 +68,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> T select(Class<T> cls, int id) throws SQLException {
         switch (cls.getName()) {
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Author":
+            case "com.redislabs.demo.rdbms.domain.Author":
                 return (T) authorDao.queryForId(id);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Book":
+            case "com.redislabs.demo.rdbms.domain.Book":
                 return (T) bookDao.queryForId(id);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Picture":
+            case "com.redislabs.demo.rdbms.domain.Picture":
                 return (T) pictureDao.queryForId(id);
             default:
                 throw new RuntimeException("unknown class " + cls.getName());
@@ -81,11 +81,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> int update(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Author":
+            case "com.redislabs.demo.rdbms.domain.Author":
                 return authorDao.update((Author) o);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Book":
+            case "com.redislabs.demo.rdbms.domain.Book":
                 return bookDao.update((Book) o);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Picture":
+            case "com.redislabs.demo.rdbms.domain.Picture":
                 return pictureDao.update((Picture) o);
             default:
                 throw new RuntimeException("unknown class " + o.getClass().getName());
@@ -94,13 +94,13 @@ public class Repository implements Closeable {
 
     public <T extends Base> int insert(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Author":
+            case "com.redislabs.demo.rdbms.domain.Author":
                 authorDao.create((Author) o);
                 return o.getId();
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Book":
+            case "com.redislabs.demo.rdbms.domain.Book":
                 bookDao.create((Book) o);
                 return o.getId();
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Picture":
+            case "com.redislabs.demo.rdbms.domain.Picture":
                 pictureDao.create((Picture) o);
                 return o.getId();
             default:
@@ -110,11 +110,11 @@ public class Repository implements Closeable {
 
     public <T extends Base> int delete(T o) throws SQLException {
         switch (o.getClass().getName()) {
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Author":
+            case "com.redislabs.demo.rdbms.domain.Author":
                 return authorDao.delete((Author) o);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Book":
+            case "com.redislabs.demo.rdbms.domain.Book":
                 return bookDao.delete((Book) o);
-            case "com.redislabs.demo.rdbms.infrastructure.domain.Picture":
+            case "com.redislabs.demo.rdbms.domain.Picture":
                 return pictureDao.delete((Picture) o);
             default:
                 throw new RuntimeException("unknown class " + o.getClass().getName());
