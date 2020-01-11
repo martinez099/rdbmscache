@@ -121,6 +121,19 @@ public class Repository implements Closeable {
         }
     }
 
+    public <T extends Base> int delete(Class<T> cls, int id) throws SQLException {
+        switch (cls.getName()) {
+            case "com.redislabs.demo.rdbms.domain.Author":
+                return authorDao.deleteById(id);
+            case "com.redislabs.demo.rdbms.domain.Book":
+                return bookDao.deleteById(id);
+            case "com.redislabs.demo.rdbms.domain.Picture":
+                return pictureDao.deleteById(id);
+            default:
+                throw new RuntimeException("unknown class " + cls.getName());
+        }
+    }
+
     public boolean reset() {
         try {
             TableUtils.dropTable(bookDao, true);

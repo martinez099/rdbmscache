@@ -67,7 +67,7 @@ public class TestAPI {
         a = api.get(Author.class, a.getId());
         assert a.getName().equals("newAuthor");
 
-        assert api.del(Author.class, a.getId());
+        assert api.del(a);
         a = api.get(Author.class, a.getId());
         assert a == null;
     }
@@ -91,7 +91,7 @@ public class TestAPI {
         b = api.get(Book.class, b.getId());
         assert b.getTitle().equals("newBook");
 
-        assert api.del(Book.class, b.getId());
+        assert api.del(b);
         b = api.get(Book.class, b.getId());
         assert b == null;
     }
@@ -118,7 +118,7 @@ public class TestAPI {
         p = api.get(Picture.class, p.getId());
         assert p.getAuthor().equals(a1);
 
-        assert api.del(Picture.class, p.getId());
+        assert api.del(p);
         p = api.get(Picture.class, p.getId());
         assert p == null;
     }

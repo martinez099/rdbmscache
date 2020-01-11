@@ -99,24 +99,6 @@ public class API {
     /**
      * Delete a domain object.
      *
-     * @param cls The class of the object.
-     * @param id The ID of the object.
-     * @param <T> The type of the object.
-     * @return Success.
-     */
-    public <T extends Base> boolean del(Class<T> cls, int id) {
-        try {
-            T o = this.repo.select(cls, id);
-            return this.del(o);
-        } catch (SQLException e) {
-            logger.severe(e.toString());
-            return false;
-        }
-    }
-
-    /**
-     * Delete a domain object.
-     *
      * @param o The object.
      * @param <T> The type of the object.
      * @return Success.
@@ -131,6 +113,26 @@ public class API {
             return false;
         }
         return this.cache.del(o.getClass(), o.getId());
+    }
+
+    /**
+     * Delete a domain object.
+     *
+     * @param cls The class of the object.
+     * @param id The ID of the object.
+     * @param <T> The type of the object.
+     * @return Success.
+     */
+    public <T extends Base> boolean del(Class<T> cls, int id) {
+        try {
+           if (this.repo.delete(cls, id) != 1) {
+               return false;
+           }
+        } catch (SQLException e) {
+            logger.severe(e.toString());
+            return false;
+        }
+        return this.cache.del(cls, id);
     }
 
     /**
